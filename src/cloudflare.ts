@@ -28,22 +28,25 @@ export class CloudflareClient {
         return payload.result;
     }
 
-    private async putList(listName: string): Promise<string> {
+    private async putList(name: string): Promise<string> {
         const lists = await this.req<{ id: string; name: string }[]>(
             "GET",
             `/rules/lists?kind=redirect`,
         );
 
-        const existing = lists.find(_ => _.name === listName);
+        const existing = lists.find(_ => _.name === name);
 
         if (existing) {
+            console.log(`  list "${name}" exists`);
             return existing.id;
         }
 
         const { id } = await this.req<{ id: string }>("POST", `/rules/lists`, {
-            name: listName,
+            name: name,
             kind: "redirect",
         });
+
+        console.log(`  list "${name}" created`);
 
         return id;
     }
@@ -57,8 +60,13 @@ export class CloudflareClient {
                 `/rules/lists/bulk_operations/${operationId}`,
             );
 
-            if (status === "completed") return;
-            if (status === "failed") throw new Error("List item update failed");
+            if (status === "completed") {
+                return;
+            }
+
+            if (status === "failed") {
+                throw new Error("List item update failed");
+            }
 
             await sleep(2000);
         }
@@ -66,8 +74,14 @@ export class CloudflareClient {
         throw new Error("List item update timed out");
     }
 
-    async put(listName: string, items: { redirect: Record<string, unknown> }[]): Promise<void> {
-        const listId = await this.putList(listName);
+    async put(name: string, items: { redirect: Record<string, unknown> }[]): Promise<void> {
+        const listId = await this.putList(name);
+
+        if (items.length === 0) {
+            console.log("  no items");
+            return;
+        }
+
         const { operation_id } = await this.req<{ operation_id: string }>(
             "PUT",
             `/rules/lists/${listId}/items`,
@@ -75,5 +89,7 @@ export class CloudflareClient {
         );
 
         await this.waitForOperation(operation_id);
+
+        console.log(`  ${items.length} item(s) synced`);
     }
 }
