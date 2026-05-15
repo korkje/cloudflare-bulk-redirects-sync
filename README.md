@@ -1,6 +1,8 @@
 # cloudflare-bulk-redirects-sync
 
-Parses [bulk redirect files](https://developers.cloudflare.com/rules/url-forwarding/bulk-redirects/reference/csv-file-format/) and syncs them to your account via the Cloudflare API. You still need to create a [bulk redirect rule](https://developers.cloudflare.com/rules/url-forwarding/bulk-redirects/) to apply the list.
+Parses [bulk redirect files](https://developers.cloudflare.com/rules/url-forwarding/bulk-redirects/reference/csv-file-format/) and syncs them to your account via the Cloudflare API.
+
+You still need to create a [bulk redirect rule](https://developers.cloudflare.com/rules/url-forwarding/bulk-redirects/) to apply the list.
 
 Matched file names will be used as list names, sanitized to only contain lowercase letters, numbers and underscores.
 
