@@ -6,15 +6,7 @@ const glob = Deno.env.get("INPUT_GLOB")!;
 const root = Deno.env.get("GITHUB_WORKSPACE") ?? Deno.cwd();
 const files = await Array.fromAsync(expandGlob(glob, { root, includeDirs: false }));
 
-if (files.length === 0) {
-    console.log(`No files found matching "${glob}"`);
-    Deno.exit(0);
-}
-
-console.log(`Found ${files.length} file(s) matching "${glob}":`);
-for (const { path } of files) {
-    console.log(`  ${path}`);
-}
+console.log(`Found ${files.length} file(s) matching "${glob}"`);
 
 const apiToken = Deno.env.get("INPUT_API_TOKEN")!;
 const accountId = Deno.env.get("INPUT_ACCOUNT_ID")!;
@@ -27,14 +19,13 @@ if (!apiToken || !accountId) {
 const client = new CloudflareClient(accountId, apiToken);
 
 for (const { path, name } of files) {
-    console.log(`\nProcessing ${name}`);
+    console.log(`${path.slice(root.length)}:`);
 
     const listName = name.replace(/[^a-z0-9_]/g, "_").toLowerCase();
 
     if (listName !== name) {
-        console.log(`  "${name}" sanitized to "${listName}"`);
+        console.log(`  "${name}" -> "${listName}"`);
     }
 
     await client.put(listName, convert(await Deno.readTextFile(path)));
-    console.log("  done!");
 }
