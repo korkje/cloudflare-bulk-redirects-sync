@@ -1,4 +1,4 @@
-name: cloudflare-bulk-redirect-sync
+name: cloudflare-bulk-redirects-sync
 description: Sync bulk redirect lists via the Cloudflare API.
 
 inputs:
