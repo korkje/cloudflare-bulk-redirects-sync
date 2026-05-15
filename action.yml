@@ -1,0 +1,31 @@
+name: cloudflare-bulk-redirect-sync
+description: Sync bulk redirect lists via the Cloudflare API.
+
+inputs:
+  api-token:
+    description: Cloudflare API token.
+    required: true
+  account-id:
+    description: Cloudflare account ID.
+    required: true
+  glob:
+    description: Glob pattern for CSV files relative to the repository root.
+    required: false
+    default: "*.csv"
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Deno
+      uses: denoland/setup-deno@v2
+      with:
+        deno-version: v2.x
+
+    - name: Sync bulk redirect lists
+      shell: bash
+      working-directory: ${{ github.action_path }}
+      env:
+        INPUT_API_TOKEN: ${{ inputs.api-token }}
+        INPUT_ACCOUNT_ID: ${{ inputs.account-id }}
+        INPUT_GLOB: ${{ inputs.glob }}
+      run: deno run -A src/main.ts
