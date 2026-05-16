@@ -12,7 +12,7 @@ Matched file names will be used as list names, sanitized to only contain lowerca
 | --- | --- | --- | --- |
 | `api-token` | yes | | Cloudflare API token |
 | `account-id` | yes | | Cloudflare account ID |
-| `glob` | no | `./*.csv` | Glob for CSV files |
+| `glob` | no | `*.csv` | Glob for CSV files |
 
 ## Usage
 
