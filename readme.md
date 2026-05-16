@@ -14,6 +14,9 @@ Matched file names will be used as list names, sanitized to only contain lowerca
 | `account-id` | yes | | Cloudflare account ID |
 | `glob` | no | `*.csv` | Glob for CSV files |
 
+> [!NOTE]
+> The api token must have "Account Rule Lists" read/write permissions.
+
 ## Usage
 
 ```yaml
